@@ -1,237 +1,182 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      //home: MyHomePage(title: 'Relatório 3 - Trabalhando com Textos'),
-      home: MyHomePage(),
+      theme: ThemeData(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  //MyHomePage({Key? key, this.title}) : super(key: key);
   const MyHomePage({Key? key}) : super(key: key);
-
-  //final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  bool _isHidden = true;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController cpfController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+  String textImc = "";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  void calculateIMC(weight, height) {
+    double imc;
+    String name = nameController.text;
+    String gender = genderController.text;
+    String cpf = cpfController.text;
+    String statusIMC;
+    //imc = weight / (height * height);
+    height = height / 100;
+    imc = weight / (height * height);
 
-  // função criada para alterar o estado da visibilidade da senha: escondida ou visível
-  // acostume-se a colocar os nomes de variáveis e funções em ingles. O Flutter agradece.
-  void _changePassVisibility() {
-    if (_isHidden == true) {
-      _isHidden = false;
-      print('_isHidden = false. Mostra Senha.');
+    if (imc < 18) {
+      statusIMC = "Abaixo do peso";
+    } else if (imc > 18 && imc < 24) {
+      statusIMC = "Peso ideal";
+    } else if (imc > 24 && imc < 29) {
+      statusIMC = "Sobrepeso";
+    } else if (imc > 29 && imc < 34) {
+      statusIMC = "Obesidade";
+    } else if (imc > 34 && imc < 40) {
+      statusIMC = "Obesidade grau 2";
     } else {
-      _isHidden = true;
-      print('_isHidden = true. Esconde Senha.');
+      statusIMC = "Obesidade Mórbida";
     }
+
+    textImc =
+        "Olá $name\nCPF: $cpf\nSexo: $gender\nSeu calculo de IMC: $statusIMC\nIMC : $imc";
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ImcCalculated(
+                  textImc: textImc,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //------------------------------------------------------------------AppBar
-      appBar: AppBar(
-        backgroundColor: Colors.teal,
-        title: Text(
-          " Usando TextField.",
-          style: TextStyle(
-            fontSize: 25,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true, // centraliza o texto da AppBar
-        leading: Icon(
-          // coloca o ícone "chave" na AppBar
-          Icons.build,
-          color: Colors.yellow,
-        ),
+      //Appbar
 
-        shape: RoundedRectangleBorder(
-            // arredonda a App bar
-            borderRadius:
-                BorderRadiusDirectional.vertical(bottom: Radius.circular(20))),
+      appBar: AppBar(
+        backgroundColor: Colors.cyanAccent,
+        title: const Text(
+          "Calcular IMC",
+          style: TextStyle(
+              fontSize: 20, fontStyle: FontStyle.italic, color: Colors.white),
+        ),
+        centerTitle: true,
       ),
-      //------------------------------------------------------------- Fim AppBar
 
       body: Center(
-        // define o corpo da tela principal
         child: Column(
-          // define uma coluna no centro da tela
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              // afasta a linha do TextField 16 pixels das margens esquerda e direita
-              padding: const EdgeInsets.all(16.0),
-
-              //---------------------------------------------- TextFieldParaNome
+              padding: const EdgeInsets.all(10.0),
               child: TextField(
-                //----------------------------------------------------Decoration
-                // coloca uma decoração no campo de texto: retângulo para entrada de dados
-                decoration: InputDecoration(
-                  labelText: 'Nome', // nome do retângulo
-                  //  tamanho da fonte  e cor para o texto da decoração
-                  labelStyle: TextStyle(
-                      fontSize: 22,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold),
-
-                  hintText: "Digite seu nome", // campo de dica
-                  hintStyle:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-
-                  prefixIcon: Icon(Icons.person), // icone da decoração
-                  prefixText:
-                      'Aluno: ', // texto do prefixo: aparece antes da entrada de dados
-                  // estilo e tamanho da fonte de texto para a dica
-                  prefixStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
-
-                  // texto do sufixo: aparece depois da entrada de dados
-                  suffixText: 'DAM',
-                  // estilo do SUfixo "DAM"
-                  suffixStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
-
-                  border: OutlineInputBorder(
-                    // arrendonda a borda da caixa de entrada
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                //------------------------------------------------ FimDecoration
-
-                // você pode escolher vários tipos de teclado: numérico, email, data, telefone etc
-                keyboardType: TextInputType.text,
-                // estilo do texto a ser digitado
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold),
-              ),
-              //------------------------------------------ Fim TextFieldParaNome
+                  controller: nameController,
+                  decoration: InputDecoration(
+                      labelText: 'Nome',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      )),
+                  keyboardType: TextInputType.text),
             ),
-
-            // o Widget Padding afasta a linha do TextField 16 pixels das margens esquerda e direita
             Padding(
-              padding: const EdgeInsets.all(16.0),
-
-              //--------------------------------------------- TextFieldParaSenha
+              padding: const EdgeInsets.all(10.0),
               child: TextField(
-                //----------------------------------------------------Decoration
-                // coloca uma decoração no campo de texto: retângulo para entrada de dados
+                controller: genderController,
                 decoration: InputDecoration(
-                  labelText: 'Senha', // nome do retângulo
-                  //  tamanho da fonte  e cor para o texto da decoração
-                  labelStyle: TextStyle(
-                      fontSize: 22,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold),
-
-                  hintText: "Informe a Senha", // campo de dica
-                  // estilo e tamanho da fonte de texto para a dica
-                  hintStyle:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-
-                  prefixIcon: Icon(Icons.lock), // icone da decoração
-                  // texto do prefixo: aparece antes da entrada de dados
-                  prefixText: 'Senha: ',
-                  // estilo do prefixo "Aluno"
-                  prefixStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
-
-                  // texto do sufixo: aparece depois da entrada de dados
-                  suffixText: 'DAM',
-                  // estilo do SUfixo "DAM"
-                  suffixStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
-
-                  // arrendonda a borda da caixa de entrada
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                //--------------------------------------------------------------
-
-                // você pode escolher vários tipos de teclado: numérico, email, data, telefone etc
-                keyboardType: TextInputType.text,
-                // estilo do texto a ser digitado
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold),
-
-                // esconde o texto ao digitar senha/muda o caracter que substitui o texto digitado
-                obscureText: _isHidden,
-                obscuringCharacter: '*',
+                    labelText: 'Sexo',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )),
               ),
-              //----------------------------------------- Fim TextFieldParaSenha
             ),
-
-            // botão para mostrar/esconder senha: altera o estado da propriedade obscureText
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: cpfController,
+                decoration: InputDecoration(
+                    labelText: 'CPF',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: weightController,
+                decoration: InputDecoration(
+                    labelText: 'Peso',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: heightController,
+                decoration: InputDecoration(
+                    labelText: 'Altura',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+              ),
+            ),
             TextButton(
-              child: Text('Mostrar Senha'),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.teal,
-                disabledForegroundColor: Colors.grey.withOpacity(0.38),
-              ),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.cyanAccent),
               onPressed: () {
-                // setState chama o Build e recontroi a tela do app atualizando estatus
-                setState(() {
-                  _changePassVisibility();
-                });
+                calculateIMC(double.parse(weightController.text),
+                    double.parse(heightController.text));
               },
-            ),
-
-            const SizedBox(
-                // coloca um espaço vazio entre TextField e Text
-                height: 60),
-
-            // aplicativo original: contador de cliques continua funcionando
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              //style: Theme.of(context).textTheme.display1,
-            ),
+              child: const Text('Calcular IMC'),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+    );
+  }
+}
+
+class ImcCalculated extends StatelessWidget {
+  final String textImc;
+
+  const ImcCalculated({super.key, required this.textImc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.cyanAccent,
+        title: const Text(
+          "IMC Calculado",
+          style: TextStyle(
+              fontSize: 20, fontStyle: FontStyle.italic, color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[Text(textImc)],
+        ),
       ),
     );
   }
