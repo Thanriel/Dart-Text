@@ -67,6 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 )));
   }
 
+  void clearScreen() {
+    nameController.clear();
+    genderController.clear();
+    cpfController.clear();
+    weightController.clear();
+    heightController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     double.parse(heightController.text));
               },
               child: const Text('Calcular IMC'),
-            )
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.cyanAccent),
+              onPressed: () {
+                clearScreen();
+              },
+              child: const Text('Limpar Tela'),
+            ),
           ],
         ),
       ),
@@ -175,7 +192,10 @@ class ImcCalculated extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          children: <Widget>[Text(textImc)],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(textImc, style: TextStyle(fontSize: 18, color: Colors.purple)),
+          ],
         ),
       ),
     );
