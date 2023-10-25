@@ -209,6 +209,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(TodoApp());
 
 class Task {
+  DateTime actualDate = DateTime.now();
   String name;
   String description;
 
@@ -233,11 +234,11 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  List<String> tasks = [];
+  List<Task> tasks = [];
   TextEditingController taskController = TextEditingController();
   TextEditingController taskDescription = TextEditingController();
 
-  void addTask(String task, String description) {
+  void addTask(Task task) {
     setState(() {
       tasks.add(task);
       taskController.clear();
@@ -264,7 +265,12 @@ class _TodoListState extends State<TodoList> {
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(tasks[index]),
+                  title: Text("Tarefa ${(index + 1)}: " +
+                      tasks[index].name +
+                      "   |   Descrição: " +
+                      tasks[index].description +
+                      "   |   Data de Criação: " +
+                      tasks[index].actualDate.toString()),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
@@ -301,7 +307,7 @@ class _TodoListState extends State<TodoList> {
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () {
-                    addTask(taskController.text, taskDescription.text);
+                    addTask(Task(taskController.text, taskDescription.text));
                   },
                 ),
               ],
